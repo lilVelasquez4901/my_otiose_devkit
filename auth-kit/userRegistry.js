@@ -1,0 +1,39 @@
+'use strict'
+
+const asyncWrapper = require('../api-kit/asyncWrapper')
+const {sendSuccess, sendCreated} = require('../api-kit/responseEnvelope')
+const {signToken} = require('./jwtWorker')
+const User = require('./userSchema')
+
+//All async functions below should have the request type and pathname to specifically guide to the use of these functions. 
+
+// POST /auth/register
+const register = asyncWrapper(async(req,res)=>{
+    const {name, email, password} = req.body ?? {}
+
+    const user = await User.create({name, email, password})
+
+    sendCreated(res, {user, token: signToken(user)})
+})
+
+// POST /auth/login
+const login = asyncWrapper(async(req,res)=>{
+    const {email, password} = req.body ?? {}
+
+    if(!email || !password)
+        throw new Error ('email and password are required') //Will throw a 401
+
+    const user = await User.findOne({email: String(email).toLowerCase().trim()}).select(`+password`)
+
+    if(!user || !(await user.comparePassword(password))){
+        throw new Error ('Invalid email or password') //Will throw a 401
+    }
+    sendSuccess(res, {user, token:signToken(user)})
+})
+
+// GET /auth/me
+const me = asyncWrapper(async(req,res)=>{
+    sendSuccess(res, req.user)
+})
+
+module.exports = {register, login, me}

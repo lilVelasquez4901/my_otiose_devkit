@@ -26,7 +26,9 @@
   },
   "homepage": "https://github.com/lilVelasquez4901/Otiose_Library#readme",
   "devDependencies": {
+    "jest": "^30.5.2",
     "morgan": "^1.12.1",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "supertest": "^7.3.1"
   }
 }
