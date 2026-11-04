@@ -2,27 +2,19 @@
 
 const mongoose = require('mongoose')
 
-/** Rename the schema as needed, resource is just to point out it's for what your api will be storing from the users like the
- * book example used here
-*/
-const resourceSchema = new mongoose.Schema(
+const exampleSchema = new mongoose.Schema(
     {
         name:{
             type:String,
-            required:[true, 'Name of the book required'], //This can simply be true/false but when placed in brackets, it may equipped with an error message if a resource is attempted to be created without it
+            required:[true, 'Name of the record required'], //This can simply be true/false but when placed in brackets, it may equipped with an error message if a resource is attempted to be created without it
             trim:true,
             maxLength:[60, 'Book names cannot exceed 60 characters'] //Prevents the string from exceeding this many characters
         },
-        author:{
+        description:{
              type:String,
              trim:true,
-             maxLength:[80, 'Author cannot exceed 80 characters'],
+             maxLength:[1000, 'Description cannot exceed 1000 characters'],
              default:'Unknown' //The string will default to this value if nothing is provided  
-        },
-        year:{
-            type:Number,
-            required:[true, 'Year of book required'],
-            default:null
         },
         ownerId:{
             type:mongoose.Schema.Types.ObjectId,
@@ -47,7 +39,7 @@ const resourceSchema = new mongoose.Schema(
 
 )
 
-plantSchema.index({status:1, location: 1})
-plantSchema.index({createdAt: -1})
+exampleSchema.index({status:1, location: 1})
+exampleSchema.index({createdAt: -1})
 
-module.exports = mongoose.model('Plant', plantSchema)
+module.exports = mongoose.model('Example', exampleSchema)

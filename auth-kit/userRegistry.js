@@ -1,9 +1,9 @@
 'use strict'
 
-const asyncWrapper = require('../api-kit/asyncWrapper')
-const {sendSuccess, sendCreated} = require('../api-kit/responseEnvelope')
+const {asyncWrapper, sendSuccess} = require('../api-kit/index')
 const {signToken} = require('./jwtWorker')
 const User = require('./userSchema')
+const ApiError = require('../guard-kit/errorClasser')
 
 //All async functions below should have the request type and pathname to specifically guide to the use of these functions. 
 
@@ -21,12 +21,12 @@ const login = asyncWrapper(async(req,res)=>{
     const {email, password} = req.body ?? {}
 
     if(!email || !password)
-        throw new Error ('email and password are required') //Will throw a 401
+        throw ApiError.badRequest('email and password are required')
 
     const user = await User.findOne({email: String(email).toLowerCase().trim()}).select(`+password`)
 
     if(!user || !(await user.comparePassword(password))){
-        throw new Error ('Invalid email or password') //Will throw a 401
+        throw ApiError.unauthorized('Invalid email or password')
     }
     sendSuccess(res, {user, token:signToken(user)})
 })
