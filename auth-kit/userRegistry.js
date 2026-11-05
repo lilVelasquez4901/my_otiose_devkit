@@ -1,6 +1,6 @@
 'use strict'
 
-const {asyncWrapper, sendSuccess} = require('../api-kit/index')
+const {asyncWrapper, sendSuccess, sendCreated} = require('../api-kit/index')
 const {signToken} = require('./jwtWorker')
 const User = require('./userSchema')
 const ApiError = require('../guard-kit/errorClasser')
@@ -26,7 +26,12 @@ const login = asyncWrapper(async(req,res)=>{
     const user = await User.findOne({email: String(email).toLowerCase().trim()}).select(`+password`)
 
     if(!user || !(await user.comparePassword(password))){
-        throw ApiError.unauthorized('Invalid email or password')
+        throw ApiError.unauthenticated('Invalid email or password')
+    }
+
+    if(user.needRehash()){
+        user.password = password
+        await user.save({validateBeforeSave: false})
     }
     sendSuccess(res, {user, token:signToken(user)})
 })

@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
-const {ROLE_VALUES, ROLES, AUTH} = require('../auth-kit/storage')
+const {ROLE_VALUES, ROLES, AUTH} = require('./storage')
 
 const userSchema = new mongoose.Schema(
     {
@@ -28,11 +28,11 @@ const userSchema = new mongoose.Schema(
         },
         role:{
             type:String,
-            enum:{values:ROLE_VALUES, message:`{Value} is not a valid role`},
+            enum:{values:ROLE_VALUES, message:`{VALUE} is not a valid role`},
             default:ROLES.USER
         }
     }, {
-        timeStamps:true,
+        timestamps:true,
         toJSON:{
             virtuals:true,
             versionKey:false,
@@ -41,9 +41,9 @@ const userSchema = new mongoose.Schema(
                 delete ret._id
                 delete ret.password
                 return ret
-            },
-            toObject:{virtuals:true}
-        }
+            }
+        },
+        toObject:{virtuals:true}
     }
 )
 
@@ -55,6 +55,10 @@ userSchema.pre('save', async function hashPassword(){
 
 userSchema.methods.comparePassword = function comparePassword(candidatePassword){
     return bcrypt.compare(candidatePassword, this.password)
+}
+
+userSchema.methods.needsRehash = function needsRehash(){
+    return bcrypt.getRounds(this.password) < AUTH.SALT_ROUNDS
 }
 
 module.exports = mongoose.model('User', userSchema)

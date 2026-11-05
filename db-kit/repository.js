@@ -3,57 +3,47 @@
 const asyncWrapper = require('../api-kit/asyncWrapper')
 const {sendSuccess, sendCreated, sendNoContent} = require('../api-kit/responseEnvelope')
 const ApiError = require('../guard-kit/errorClasser')
-const Book = require('./resourceSchema')
-
-const WRITABLE_FIELDS = ['name', 'author', 'year']
-//These are fields you'll allow users to change, ownerId is one of the few you should NOT allow them to change
+const Example = require('./resourceSchema')
 
 // GET /api/v1/
 const getAllRecords = asyncWrapper(async(req,res)=>{
-    const filter = buildBookFilter(req.query)
-    const sort = parseSort(req.query.sort)
-    const {page, limit, skip} = parsePagination(req.query)
-
-    const [Book, total] = await Promise.all([
-        Book.find(filter).sort(sort).skip(skip).limit(limit),
-        Book.countDocuments(filter)
-    ])
-   sendSuccess(res,book, 200, {meta: buildMeta({page, limit, total})})
+    const example = await Example.find({})
+   sendSuccess(res,example, 200,)
 })
 
 // POST /api/v1/:id
 const createRecord = asyncWrapper(async(req,res)=>{
-    //Remember. Book /= book. You use Book for the schema, book for the record. 
+    //Remember. Example /= example. You use Example for the schema, example for the record. 
     //Only mind it if you name your own resource similiarily
-    const book = await Book.create({ 
+    const example = await Example.create({ 
         ...pickWritableFields(req.body),
         ownerId: req.user._id
         //using the mongodb id --> _id
     })
-    sendCreated(res, book)
+    sendCreated(res, example)
 })
 
-// GET /api/v1/plants/:id
+// GET /api/v1/:id
 const getOneRecord = asyncWrapper(async(req,res)=>{
-    const book = await Book.findById(req.params.id)
-    if(!book) throw ApiError.notFound('Book not Found')
-    sendSuccess(res, book)
+    const example = await Example.findById(req.params.id)
+    if(!example) throw ApiError.notFound('Example resource not Found')
+    sendSuccess(res, example)
 })
 
 // DELETE /api/v1/:id
 const deleteRecord = asyncWrapper(async(req,res)=>{
-    const book = await Book.findByIdAndDelete(req.params.id)
-    if(!book) throw ApiError.notFound('Book not Found')
+    const example = await Example.findByIdAndDelete(req.params.id)
+    if(!example) throw ApiError.notFound('Example resource not Found')
     sendNoContent(res);
 })
 
 // PUT & PATCH /api/v1/:id
 const updateRecord = asyncWrapper(async(req,res)=>{
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+    const example = await Example.findByIdAndUpdate(req.params.id, req.body, {
         new:true, runValidators:true
     })
-    if(!book) throw ApiError.notFound('Book not Found')
-    sendSuccess(res, book)
+    if(!example) throw ApiError.notFound('Example not Found')
+    sendSuccess(res, example)
 })
 
 module.exports = {getAllRecords, getOneRecord, updateRecord, deleteRecord, createRecord}
