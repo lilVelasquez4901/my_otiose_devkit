@@ -1,18 +1,19 @@
 'use strict'
-
 const asyncHandler = require('../api-kit/asyncWrapper')
 const ApiError = require('./errorClasser')
-const {AUTH, verifyToken, User} = require('../auth-kit/index')
+const {AUTH} = require('../auth-kit/storage')
+const {verifyToken} = require('../auth-kit/jwtWorker')
+const {User} = require('../auth-kit/userSchema')
 
 const authValidator = asyncHandler(async(req,res,next)=>{
     const header = req.get('authorization')
 
-    if(!header.startsWith(AUTH.BEARER_PREFIX)){
+    if(!header || !header.startsWith(AUTH.BEARER_PREFIX)){
         throw ApiError.unauthorized('Missing or malformed Authorized header')
     }
 
     const token = header.slice(AUTH.BEARER_PREFIX.length).trim()
-    if(!token) throw ApiError.unauthorized('Missing or malformed Authorization header')
+    if(!token) throw ApiError.unauthenticated('Missing or malformed Authorization header')
         // Error 401 thrown for forged, expired or garbage tokens
     const payload = verifyToken(token)
 

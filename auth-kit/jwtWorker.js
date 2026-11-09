@@ -3,12 +3,12 @@
 const jwt = require('jsonwebtoken')
 const {ApiError} = require('../guard-kit/index')
 const {AUTH} = require('./storage')
-const jwtSecret =  process.env.JWT_SECRET || "SuperSecretLoginCodeForAuthorizing"
+const jwtSecret =  process.env.JWT_SECRET || "blahblahlblahblah"
 //Always, ALWAYS make jwtSecrets an environmental variable. It is to never be seen or used by anyone but you and co-developers.
-//Moreover, the value should be a strong one, involving special characters and numbers with letters.
+//Moreover, the value should be a strong one, involving special characters and numbers with letters. Therefore, delete this with 
 
 if (jwtSecret === 'SuperSecretLoginCodeForAuthorizing') {
-  throw new Error('Set a real JWT secret in jwtWorker.js or the JWT_SECRET env variable')
+  throw new Error('Set a real JWT_SECRET env variable')
 }
 function signToken(user){
     const payload = {sub: String(user._id), role: user.role}

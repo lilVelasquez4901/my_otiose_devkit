@@ -27,6 +27,12 @@ class ApiError extends Error { //This is needed so your code doesn't ask you "wh
     static conflict(message = 'Conflict', details = null){
         return new ApiError(409, message, details)
     }
+    static serverError(message = 'Internal Server Error', details = null, statusCode = 500) {
+        return new ApiError(statusCode, message, details)
+    }
+    static serviceUnavailable(message = 'Service Unavailable', details = null) {
+        return new ApiError(503, message, details)
+    }
 }
 
 module.exports = ApiError

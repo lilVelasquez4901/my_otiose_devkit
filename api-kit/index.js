@@ -1,5 +1,6 @@
 module.exports = {
     ...require('./asyncwrapper'),
-    ...require('./resource.routes'),
-    ...require('./responseEnvelope')
+    resourceRouter: require('./crud.routes'),
+    ...require('./responseEnvelope'),
+    ...require('./user.routes')
 }

@@ -5,7 +5,6 @@ const resourceController = require('../db-kit/repository')
 //This line below will be your verifier, you should only use this on requests that have permanent effects.
 //Such as creation of a record or deletion, not on Get requests that do nothing after.
 const {authValidator} = require('../guard-kit/validator')
-
 const router = express.Router()
 
 router
@@ -19,5 +18,6 @@ router
         .put(authValidator, resourceController.updateRecord)
         .patch(authValidator, resourceController.updateRecord)
         .delete(authValidator, resourceController.deleteRecord)
+
 
 module.exports = router

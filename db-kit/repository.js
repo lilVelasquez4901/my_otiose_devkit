@@ -15,8 +15,7 @@ const getAllRecords = asyncWrapper(async(req,res)=>{
 const createRecord = asyncWrapper(async(req,res)=>{
     //Remember. Example /= example. You use Example for the schema, example for the record. 
     //Only mind it if you name your own resource similiarily
-    const example = await Example.create({ 
-        ...pickWritableFields(req.body),
+    const example = await Example.create({
         ownerId: req.user._id
         //using the mongodb id --> _id
     })

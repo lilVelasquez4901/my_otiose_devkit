@@ -1,7 +1,6 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const {RATING} = require('../auth-kit/index')
 
 const exampleSchema = new mongoose.Schema(
     {
@@ -16,13 +15,6 @@ const exampleSchema = new mongoose.Schema(
              trim:true,
              maxLength:[1000, 'Description cannot exceed 1000 characters'],
              default:'Unknown' //The string will default to this value if nothing is provided  
-        },
-        rating:{
-            type:String,
-            required:true,
-            trim:true,
-            values:{values:RATINGS, message:'{VALUE} is not a supported rating'}, //used to keep specific values as the only options
-            default:'G'
         },
         ownerId:{ //This should be automatically filled out with a mongoose id by a user when running a create function
             type:mongoose.Schema.Types.ObjectId,

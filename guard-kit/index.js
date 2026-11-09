@@ -1,4 +1,4 @@
 module.exports = {
     ApiError: require('./errorClasser'),
-    ...require('./validator')
+    authValidator: require('./validator').authValidator
 }
