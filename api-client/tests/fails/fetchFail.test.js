@@ -1,8 +1,13 @@
-const {fetchWrapper} = require('../../fetchWrapper')
+const {fetchWrapper, configure} = require('../../fetchWrapper')
 const test = require('node:test')
 const assert = require('node:assert')
+const {beforeEach} = test
 
-test('returns 404 with a non-ok response', async(t)=>{
+beforeEach(() => {
+    configure({ baseUrl: 'https://example.com/api'})
+})
+
+test('Returns 404 with a non-ok response', async(t)=>{
     t.mock.method(globalThis, 'fetch', async () => ({
         ok: false,
         status: 404,
@@ -14,7 +19,7 @@ test('returns 404 with a non-ok response', async(t)=>{
 )
 })
 
-test('throws 503 when the network call fails', async (t) => {
+test('Throws 503 when the network call fails', async (t) => {
     t.mock.method(globalThis, 'fetch', async () => {
         throw new Error('connection refused')
     })
@@ -23,4 +28,17 @@ test('throws 503 when the network call fails', async (t) => {
         () => fetchWrapper('/users/1'),
         (err) => err.statusCode === 503 && err.details.message === 'connection refused'
     )
+})
+
+test('Config throws typeError when baseUrl is missing or not a string', ()=>{
+    const expected = { name: 'TypeError', message: /baseUrl must be a string/ }
+
+    assert.throws(() => configure({}), expected),
+    assert.throws(() => configure(), expected),
+    assert.throws(() => configure({ baseUrl: 123 }), expected)
+})
+
+test('Config throws TypeError when getToken is not a function', () => {
+    assert.throws(() => configure({ baseUrl: 'https://example.com/api', getToken: 'nope' }),
+    { name: 'TypeError', message: /getToken must be a function/ })
 })
