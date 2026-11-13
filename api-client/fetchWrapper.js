@@ -1,6 +1,6 @@
 'use strict'
 
-const ApiError = require('./apiError')
+const ApiError = require('../guard-kit/errorClasser')
 
 let baseUrl = null
 let getToken = null

@@ -27,6 +27,7 @@ class ApiError extends Error { //This is needed so your code doesn't ask you "wh
     static conflict(message = 'Conflict', details = null){
         return new ApiError(409, message, details)
     }
+    //Errors reserved for api-client
     static serverError(message = 'Internal Server Error', details = null, statusCode = 500) {
         return new ApiError(statusCode, message, details)
     }

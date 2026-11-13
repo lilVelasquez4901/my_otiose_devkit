@@ -39,7 +39,6 @@ const exampleSchema = new mongoose.Schema(
 
 )
 
-exampleSchema.index({status:1, location: 1})
 exampleSchema.index({createdAt: -1})
 
 module.exports = mongoose.model('Example', exampleSchema)

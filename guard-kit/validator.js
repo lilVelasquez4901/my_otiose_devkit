@@ -3,7 +3,7 @@ const asyncHandler = require('../api-kit/asyncWrapper')
 const ApiError = require('./errorClasser')
 const {AUTH} = require('../auth-kit/storage')
 const {verifyToken} = require('../auth-kit/jwtWorker')
-const {User} = require('../auth-kit/userSchema')
+const User = require('../auth-kit/userSchema')
 
 const authValidator = asyncHandler(async(req,res,next)=>{
     const header = req.get('authorization')
